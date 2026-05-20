@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>صفحة المراجعة</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Cairo", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+      color: white;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      font-size: clamp(28px, 5vw, 48px);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 50px 25px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.03);
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .card h2 {
+      font-size: clamp(24px, 4vw, 34px);
+      margin-bottom: 15px;
+    }
+
+    .card p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 40px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>اختر لغة المراجعة</h1>
+
+    <div class="cards">
+
+      <div class="card" onclick="goToPage('arabic.html')">
+        <h2>المراجعة باللغة العربية</h2>
+        <p>اضغط للدخول إلى المراجعة العربية</p>
+      </div>
+
+      <div class="card" onclick="goToPage('english.html')">
+        <h2>Revision in English</h2>
+        <p>Click to open the English revision</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function goToPage(page) {
+      window.location.href = page;
+    }
+  </script>
+
+</body>
+</html>

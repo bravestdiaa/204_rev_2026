@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج أسئلة DA204 التدريبي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #F0EBF8; /* لون خلفية جوجل فورمز */
+        }
+        .en-text {
+            font-family: 'Roboto', sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
+        .ar-text {
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+        .form-card {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #dadce0;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            transition: all 0.3s ease;
+        }
+        .form-card:hover {
+            box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+        }
+        .top-border {
+            border-top: 8px solid #673AB7; /* اللون البنفسجي المميز */
+        }
+        .btn-action {
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            background-color: #F3E8FD;
+            color: #673AB7;
+        }
+        .radio-custom:checked + label {
+            color: #673AB7;
+            font-weight: 600;
+        }
+        /* إخفاء شريط التمرير الأفقي */
+        body { overflow-x: hidden; }
+        
+        .answer-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        .answer-container.show {
+            max-height: 1000px;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="text-gray-800 pb-20">
+
+    <!-- Back to Landing Page Button -->
+    <div class="max-w-3xl mx-auto mt-6 px-4">
+        <a href="index.html" class="inline-flex items-center bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-md font-semibold shadow-sm transition-colors">
+            <i class="fas fa-arrow-right ml-2"></i> العودة إلى الصفحة الرئيسية
+        </a>
+    </div>
+
+
+    <!-- Header Section -->
+    <div class="max-w-3xl mx-auto mt-6 px-4">
+        <div class="form-card top-border p-6 mb-6">
+            <h1 class="text-3xl font-bold mb-2 text-gray-900">نموذج أسئلة مادة DA204 التدريبي</h1>
+            <p class="text-gray-600 mb-4">تم استخراج هذه الأسئلة والإجابات من ملفات التدريب المرفقة. يمكنك اختبار نفسك، ترجمة الأسئلة، وإظهار الإجابات النموذجية.</p>
+            <div class="text-sm text-red-600 bg-red-50 p-3 rounded-md border border-red-200">
+                <i class="fas fa-info-circle ml-1"></i> ملاحظة: الأسئلة مقسمة إلى (صح/خطأ)، (اختيار من متعدد)، و(أسئلة مقالية).
+            </div>
+        </div>
+    </div>
+
+    <!-- Questions Container -->
+    <div id="questions-container" class="max-w-3xl mx-auto px-4 space-y-6">
+        <!-- سيتم حقن الأسئلة هنا بواسطة JavaScript -->
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="max-w-3xl mx-auto mt-8 px-4 flex flex-col sm:flex-row justify-between gap-4 mb-12">
+        <button onclick="evaluateAll()" class="bg-[#673AB7] hover:bg-[#5e35b1] text-white px-6 py-3 rounded-md font-semibold shadow-md transition-colors flex items-center justify-center">
+            <i class="fas fa-check-double ml-2"></i> تقييم الإجابات
+        </button>
+        <button onclick="clearAllAnswers()" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3 rounded-md font-semibold shadow-sm transition-colors flex items-center justify-center">
+            <i class="fas fa-trash-alt ml-2"></i> مسح كل الإجابات
+        </button>
+    </div>
+
+    <!-- Floating Back to Top Button -->
+    <button onclick="scrollToTop()" id="fab" class="fixed bottom-6 left-6 bg-[#673AB7] text-white p-4 rounded-full shadow-lg hover:bg-[#5e35b1] transition-all transform scale-0 opacity-0 z-50">
+        <i class="fas fa-arrow-up text-xl"></i>
+    </button>
+
+    <!-- Modal for Evaluation Result -->
+    <div id="result-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full text-center">
+            <div class="text-5xl text-[#673AB7] mb-4"><i class="fas fa-award"></i></div>
+            <h2 class="text-2xl font-bold mb-2">نتيجة التقييم</h2>
+            <p id="score-text" class="text-xl mb-6 font-semibold"></p>
+            <p class="text-sm text-gray-500 mb-6">ملاحظة: الأسئلة المقالية لا تحتسب في النتيجة التلقائية ويجب مراجعتها يدوياً.</p>
+            <button onclick="closeModal()" class="bg-[#673AB7] text-white px-6 py-2 rounded-md hover:bg-[#5e35b1] transition-colors w-full">إغلاق</button>
+        </div>
+    </div>
+
+    <script>
+        // Data Structure with all questions, options, answers, and translations
+        const quizData = [
+            // --- Section 1: True / False ---
+            {
+                id: "q1", section: "صح / خطأ", type: "tf",
+                qEn: "Generalization of machine learning based model is its ability to make predictions to data observations it has never seen before during its learning.",
+                qAr: "التعميم في نموذج التعلم الآلي هو قدرته على إجراء تنبؤات لملاحظات بيانات لم يرها من قبل أثناء تدريبه.",
+                optEn: ["True", "False"], optAr: ["صح", "خطأ"],
+                ansIdx: 0,
+                expEn: "Generalization means the model can make predictions for observations that were not seen during training.",
+                expAr: "التعميم يعني أن النموذج يمكنه إجراء تنبؤات للملاحظات التي لم يتم رؤيتها أثناء التدريب."
+            },
+            {
+                id: "q2", section: "صح / خطأ", type: "tf",
+                qEn: "Anomaly detection learning is exploring unusual patterns in data.",
+                qAr: "تعلم اكتشاف الشذوذ (Anomaly detection) هو استكشاف أنماط غير عادية في البيانات.",
+                optEn: ["True", "False"], optAr: ["صح", "خطأ"],
+                ansIdx: 0,
+                expEn: "Anomaly detection is used to identify unusual, rare, or abnormal patterns in data.",
+                expAr: "يستخدم اكتشاف الشذوذ لتحديد الأنماط غير العادية، النادرة، أو الشاذة في البيانات."
+            },
+            {
+                id: "q3", section: "صح / خطأ", type: "tf",
+                qEn: "Clustering is a supervised learning task where its objective is to find groups of related observations within training data such that observations within a group are more similar to each other based on some similarity measure than they are to observations in other groups.",
+                qAr: "التجميع (Clustering) هو مهمة تعلم خاضع للإشراف (Supervised) هدفها إيجاد مجموعات من الملاحظات المترابطة ضمن بيانات التدريب بحيث تكون الملاحظات داخل المجموعة أكثر تشابهاً مع بعضها بناءً على مقياس تشابه معين مما هي عليه مع ملاحظات المجموعات الأخرى.",
+                optEn: ["True", "False"], optAr: ["صح", "خطأ"],
+                ansIdx: 1,
+                expEn: "Correction: Clustering is an unsupervised learning task. It groups related observations according to similarity without using predefined class labels.",
+                expAr: "تصحيح: التجميع هو مهمة تعلم غير خاضع للإشراف (Unsupervised). يقوم بتجميع الملاحظات المترابطة وفقاً للتشابه دون استخدام تسميات فئات محددة مسبقاً."
+            },
+            {
+                id: "q4", section: "صح / خطأ", type: "tf",
+                qEn: "Machine learning algorithms are classified into two classes based on whether or not systems are trained with human supervision.",
+                qAr: "تُصنف خوارزميات التعلم الآلي إلى فئتين بناءً على ما إذا كانت الأنظمة تُدرب بإشراف بشري أم لا.",
+                optEn: ["True", "False"], optAr: ["صح", "خطأ"],
+                ansIdx: 1,
+                expEn: "Correction: Machine learning algorithms are not classified into only two classes based on human supervision. They include supervised, unsupervised, semi-supervised, and reinforcement learning.",
+                expAr: "تصحيح: لا تُصنف خوارزميات التعلم الآلي إلى فئتين فقط بناءً على الإشراف البشري، بل تشمل التعلم الخاضع للإشراف، وغير الخاضع للإشراف، وشبه الخاضع للإشراف، والتعلم المعزز."
+            },
+            {
+                id: "q5", section: "صح / خطأ", type: "tf",
+                qEn: "Gender is usually an example of asymmetric binary attribute.",
+                qAr: "الجنس (Gender) عادة ما يكون مثالاً على سمة ثنائية غير متماثلة (asymmetric binary attribute).",
+                optEn: ["True", "False"], optAr: ["صح", "خطأ"],
+                ansIdx: 1,
+                expEn: "Correction: Gender is usually treated as a symmetric binary attribute because both categories are equally important.",
+                expAr: "تصحيح: عادة ما يتم التعامل مع الجنس كسمة ثنائية متماثلة (symmetric) لأن كلتا الفئتين لهما نفس القدر من الأهمية."
+            },
+            {
+                id: "q6", section: "صح / خطأ", type: "tf",
+                qEn: "Both of support and confidence of a correlation rule between two items in a dataset give indicator of their association strength.",
+                qAr: "كل من الدعم (support) والثقة (confidence) لقاعدة الارتباط بين عنصرين في مجموعة بيانات يعطيان مؤشراً على قوة ارتباطهما.",
+                optEn: ["True", "False"], optAr: ["صح", "خطأ"],
+                ansIdx: 0,
+                expEn: "Support and confidence are used to evaluate association rules; support measures frequency and confidence measures rule reliability.",
+                expAr: "يتم استخدام الدعم والثقة لتقييم قواعد الارتباط؛ حيث يقيس الدعم التكرار وتقيس الثقة موثوقية القاعدة."
+            },
+            {
+                id: "q7", section: "صح / خطأ", type: "tf",
+                qEn: "Users posts in social networks are streaming spatiotemporal data.",
+                qAr: "منشورات المستخدمين في الشبكات الاجتماعية هي بيانات متدفقة مكانية وزمانية (streaming spatiotemporal data).",
+                optEn: ["True", "False"], optAr: ["صح", "خطأ"],
+                ansIdx: 0,
+                expEn: "Social-network posts may arrive continuously and may include time and location information.",
+                expAr: "قد تصل منشورات الشبكة الاجتماعية بشكل مستمر وقد تتضمن معلومات تتعلق بالوقت والمكان."
+            },
+            {
+                id: "q8", section: "صح / خطأ", type: "tf",
+                qEn: "The neuron output is function-bounded.",
+                qAr: "مخرجات العصبون (neuron) مقيدة بدالة (function-bounded).",
+                optEn: ["True", "False"], optAr: ["صح", "خطأ"],
+                ansIdx: 0,
+                expEn: "The statement is correct in the usual neural-network context, where the neuron output is controlled by an activation function.",
+                expAr: "العبارة صحيحة في سياق الشبكات العصبية المعتاد، حيث يتم التحكم في مخرجات العصبون بواسطة دالة تنشيط (activation function)."
+            },
+            {
+                id: "q9", section: "صح / خطأ", type: "tf",
+                qEn: "NB classifier does not need any precondition on data attributes in order to work efficiently.",
+                qAr: "مصنف بايز الساذج (NB classifier) لا يحتاج إلى أي شرط مسبق على سمات البيانات لكي يعمل بكفاءة.",
+                optEn: ["True", "False"], optAr: ["صح", "خطأ"],
+                ansIdx: 1,
+                expEn: "Correction: Naive Bayes depends on the conditional independence assumption among attributes, so it has a basic precondition.",
+                expAr: "تصحيح: يعتمد مصنف بايز الساذج على افتراض الاستقلال الشرطي بين السمات، لذلك لديه شرط مسبق أساسي."
+            },
+
+            // --- Section 2: Multiple Choice ---
+            {
+                id: "q10", section: "اختيار من متعدد", type: "mcq",
+                qEn: "Supervised learning types are",
+                qAr: "أنواع التعلم الخاضع للإشراف (Supervised learning) هي:",
+                optEn: ["(A) two", "(B) three", "(C) four", "(D) five"],
+                optAr: ["(أ) اثنان", "(ب) ثلاثة", "(ج) أربعة", "(د) خمسة"],
+                ansIdx: 0,
+                expEn: "The main supervised learning types are classification and regression.",
+                expAr: "الأنواع الرئيسية للتعلم الخاضع للإشراف هي التصنيف (classification) والانحدار (regression)."
+            },
+            {
+                id: "q11", section: "اختيار من متعدد", type: "mcq",
+                qEn: "Sampling bias is a result of",
+                qAr: "تحيز أخذ العينات (Sampling bias) هو نتيجة لـ:",
+                optEn: ["(A) poor-quality training data", "(B) non-representative training data", "(C) irrelevant features", "(D) insufficient quantity of training data"],
+                optAr: ["(أ) بيانات تدريب رديئة الجودة", "(ب) بيانات تدريب غير تمثيلية", "(ج) ميزات غير ذات صلة", "(د) كمية غير كافية من بيانات التدريب"],
+                ansIdx: 1,
+                expEn: "Sampling bias occurs when training data do not represent the target population.",
+                expAr: "يحدث تحيز أخذ العينات عندما لا تمثل بيانات التدريب المجموعة السكانية المستهدفة."
+            },
+            {
+                id: "q12", section: "اختيار من متعدد", type: "mcq",
+                qEn: "_________ attempts to predict continuous-valued response for a data observation.",
+                qAr: "_________ يحاول التنبؤ باستجابة ذات قيمة مستمرة لملاحظة البيانات.",
+                optEn: ["(A) Classification", "(B) Visualization", "(C) Regression", "(D) Clustering"],
+                optAr: ["(أ) التصنيف", "(ب) التصور المرئي", "(ج) الانحدار", "(د) التجميع"],
+                ansIdx: 2,
+                expEn: "Regression predicts continuous or numerical response values.",
+                expAr: "الانحدار (Regression) يتنبأ بقيم استجابة مستمرة أو عددية."
+            },
+            {
+                id: "q13", section: "اختيار من متعدد", type: "mcq",
+                qEn: "An example of _________ data is Egypt stock prices.",
+                qAr: "مثال على بيانات _________ هو أسعار الأسهم المصرية.",
+                optEn: ["(A) time series", "(B) sequence", "(C) multimedia", "(D) table-like"],
+                optAr: ["(أ) السلاسل الزمنية", "(ب) التسلسل", "(ج) الوسائط المتعددة", "(د) شبيهة بالجدول"],
+                ansIdx: 0,
+                expEn: "Stock prices are observed across successive time periods (Time series).",
+                expAr: "تتم ملاحظة أسعار الأسهم عبر فترات زمنية متتالية (سلاسل زمنية)."
+            },
+            {
+                id: "q14", section: "اختيار من متعدد", type: "mcq",
+                qEn: "The goal of the _________ learning is analyzing unlabeled data to find hidden interconnections between data points and structure them by similarities or differences.",
+                qAr: "الهدف من التعلم _________ هو تحليل البيانات غير المسماة (unlabeled) للعثور على الترابطات الخفية بين نقاط البيانات وهيكلتها حسب أوجه التشابه أو الاختلاف.",
+                optEn: ["(A) supervised", "(B) semi-supervised", "(C) unsupervised", "(D) reinforcement"],
+                optAr: ["(أ) الخاضع للإشراف", "(ب) شبه الخاضع للإشراف", "(ج) غير الخاضع للإشراف", "(د) التعزيزي"],
+                ansIdx: 2,
+                expEn: "Unsupervised learning analyzes unlabeled data to discover hidden structures.",
+                expAr: "يقوم التعلم غير الخاضع للإشراف (Unsupervised) بتحليل البيانات غير المسماة لاكتشاف الهياكل المخفية."
+            },
+            {
+                id: "q15", section: "اختيار من متعدد", type: "mcq",
+                qEn: "_________ learning is optimizing its weights and biases.",
+                qAr: "التعلم في _________ يتم عن طريق تحسين أوزانها وانحيازاتها (weights and biases).",
+                optEn: ["(A) LR", "(B) ANN", "(C) SVM", "(D) NB"],
+                optAr: ["(أ) الانحدار الخطي (LR)", "(ب) الشبكات العصبية الاصطناعية (ANN)", "(ج) آلة متجه الدعم (SVM)", "(د) بايز الساذج (NB)"],
+                ansIdx: 1,
+                expEn: "Artificial Neural Networks (ANN) learn by optimizing weights and biases.",
+                expAr: "تتعلم الشبكات العصبية الاصطناعية (ANN) من خلال تحسين الأوزان والانحيازات."
+            },
+            {
+                id: "q16", section: "اختيار من متعدد", type: "mcq",
+                qEn: "Student ID (Code) in data matrix is usually _________ attribute.",
+                qAr: "رقم الطالب (الكود) في مصفوفة البيانات عادة ما يكون سمة _________.",
+                optEn: ["(A) nominal", "(B) ordinary", "(C) numeric", "(D) binary"],
+                optAr: ["(أ) اسمية (nominal)", "(ب) ترتيبية (ordinary/ordinal)", "(ج) رقمية (numeric)", "(د) ثنائية (binary)"],
+                ansIdx: 0,
+                expEn: "A student ID is an identifier or label, not a meaningful numerical measurement.",
+                expAr: "رقم الطالب هو مجرد معرف أو تسمية، وليس قياسًا رقميًا له معنى حسابي."
+            },
+            {
+                id: "q17", section: "اختيار من متعدد", type: "mcq",
+                qEn: "Uncovering fraudulent usage of credit cards is _________ mining task.",
+                qAr: "الكشف عن الاستخدام الاحتيالي لبطاقات الائتمان هو مهمة تنقيب عن _________.",
+                optEn: ["(A) labels", "(B) associations", "(C) groups", "(D) anomalies"],
+                optAr: ["(أ) التسميات", "(ب) الارتباطات", "(ج) المجموعات", "(د) الشذوذ (anomalies)"],
+                ansIdx: 3,
+                expEn: "Fraudulent credit-card usage is a typical anomaly detection problem.",
+                expAr: "الاستخدام الاحتيالي لبطاقات الائتمان هو مشكلة نموذجية لاكتشاف الشذوذ (التشوهات)."
+            },
+            {
+                id: "q18", section: "اختيار من متعدد", type: "mcq",
+                qEn: "_________ occur if a cancer screening test predicts that patients do not have cancer when they actually do, so this could lead to the disease progressing without treatment.",
+                qAr: "_________ يحدث إذا توقع اختبار فحص السرطان أن المرضى لا يعانون من السرطان بينما هم مصابون به بالفعل، مما قد يؤدي إلى تطور المرض دون علاج.",
+                optEn: ["(A) TNs", "(B) TPs", "(C) FNs", "(D) FPs"],
+                optAr: ["(أ) سلبيات صحيحة (TNs)", "(ب) إيجابيات صحيحة (TPs)", "(ج) سلبيات خاطئة (FNs)", "(د) إيجابيات خاطئة (FPs)"],
+                ansIdx: 2,
+                expEn: "False negatives (FNs) occur when the actual condition is positive but the prediction is negative.",
+                expAr: "تحدث السلبيات الخاطئة (False Negatives - FNs) عندما تكون الحالة الفعلية إيجابية ولكن التنبؤ سلبي."
+            },
+
+            // --- Section 3: Essay Questions ---
+            {
+                id: "q19", section: "أسئلة مقالية", type: "essay",
+                qEn: "What type of algorithm would you use to segment your customers into multiple groups?",
+                qAr: "ما نوع الخوارزمية التي ستستخدمها لتقسيم عملائك إلى مجموعات متعددة؟",
+                expEn: "A clustering algorithm should be used to segment customers into multiple groups. Clustering is an unsupervised learning method that groups customers according to similarity in their characteristics, such as purchasing behavior, age, income, location, or product preferences. A common example is K-Means clustering.",
+                expAr: "يجب استخدام خوارزمية تجميع (Clustering) لتقسيم العملاء إلى مجموعات. التجميع هو طريقة تعلم غير خاضع للإشراف تقوم بتجميع العملاء وفقاً للتشابه في خصائصهم، مثل سلوك الشراء، العمر، الدخل، الموقع، أو تفضيلات المنتج. من الأمثلة الشائعة تجميع K-Means."
+            },
+            {
+                id: "q20", section: "أسئلة مقالية", type: "essay",
+                qEn: "List the steps of knowledge discovery process?",
+                qAr: "اذكر خطوات عملية اكتشاف المعرفة (KDD)؟",
+                expEn: "1. Data cleaning: removing noise and errors.\n2. Data integration: combining data from different sources.\n3. Data selection: choosing relevant data.\n4. Data transformation: converting data into suitable format.\n5. Data mining: applying algorithms to discover patterns.\n6. Pattern evaluation: identifying meaningful patterns.\n7. Knowledge presentation: presenting knowledge using visualizations.",
+                expAr: "1. تنظيف البيانات: إزالة الضوضاء والأخطاء.\n2. تكامل البيانات: دمج البيانات من مصادر مختلفة.\n3. اختيار البيانات: اختيار البيانات ذات الصلة.\n4. تحويل البيانات: تحويل البيانات إلى تنسيق مناسب.\n5. استخراج البيانات: تطبيق الخوارزميات لاكتشاف الأنماط.\n6. تقييم الأنماط: تحديد الأنماط ذات المغزى.\n7. عرض المعرفة: تقديم المعرفة باستخدام التقارير والمرئيات."
+            },
+            {
+                id: "q21", section: "أسئلة مقالية", type: "essay",
+                qEn: "Describe the fundamental idea behind logistic regression?",
+                qAr: "اشرح الفكرة الأساسية وراء الانحدار اللوجستي (Logistic Regression)؟",
+                expEn: "Logistic regression is a supervised learning algorithm used when the dependent variable is binary (e.g., yes/no). Its fundamental idea is to estimate the probability that an observation belongs to a certain class. It uses the logistic function to keep the predicted probability between 0 and 1. The model uses a decision threshold (like 0.50) to classify.",
+                expAr: "الانحدار اللوجستي هو خوارزمية تعلم خاضع للإشراف تُستخدم عندما يكون المتغير التابع ثنائياً (مثل نعم/لا). الفكرة الأساسية هي تقدير احتمالية انتماء ملاحظة ما إلى فئة معينة. يستخدم الدالة اللوجستية للحفاظ على الاحتمال المتوقع بين 0 و 1، ثم يصنف بناءً على حد فاصل (مثل 0.50)."
+            },
+            {
+                id: "q22", section: "أسئلة مقالية", type: "essay",
+                qEn: "Give an example of a real-world dataset that can be a mixture of structured, semi-structured, and unstructured data? And explain why?",
+                qAr: "أعط مثالاً على مجموعة بيانات من العالم الحقيقي يمكن أن تكون مزيجاً من بيانات مهيكلة، شبه مهيكلة، وغير مهيكلة؟ واشرح السبب؟",
+                expEn: "A hospital electronic health record dataset.\n- Structured: patient age, gender, admission date (stored in tables).\n- Semi-structured: XML/JSON records from medical devices or insurance claims (has tags but no fixed table).\n- Unstructured: doctors' notes, radiology reports, medical images (free text/images).\nIt's mixed because it contains numerical/categorical fields, tagged records, and free-text/images.",
+                expAr: "مجموعة بيانات السجلات الصحية الإلكترونية للمستشفى.\n- المهيكلة: عمر المريض، الجنس، تاريخ الدخول (مخزنة في جداول).\n- شبه المهيكلة: سجلات XML أو JSON من الأجهزة الطبية (تحتوي على علامات ولكن لا تتبع بنية جدول ثابتة).\n- غير المهيكلة: ملاحظات الأطباء، تقارير الأشعة، الصور الطبية (نصوص حرة أو صور).\nهي مختلطة لأنها تحتوي على حقول رقمية/فئوية، سجلات منظمة جزئياً، ومعلومات نصية/مصورة."
+            },
+            {
+                id: "q23", section: "أسئلة مقالية", type: "essay",
+                qEn: "Differentiate between the tasks of clustering and classification? And give at least one real problem for each one?",
+                qAr: "فرق بين مهام التجميع (Clustering) والتصنيف (Classification)؟ وأعط مشكلة حقيقية واحدة على الأقل لكل منهما؟",
+                expEn: "Clustering is Unsupervised (uses unlabeled data) and aims to find natural groups in data. Example: Customer segmentation based on purchasing behavior.\nClassification is Supervised (uses labeled data) and aims to assign observations to predefined classes. Example: Classifying emails as spam or not spam.",
+                expAr: "التجميع (Clustering) غير خاضع للإشراف (يستخدم بيانات غير مسماة) ويهدف إلى إيجاد مجموعات طبيعية في البيانات. مثال: تقسيم العملاء بناءً على سلوك الشراء.\nالتصنيف (Classification) خاضع للإشراف (يستخدم بيانات مسماة) ويهدف إلى تعيين الملاحظات لفئات محددة مسبقاً. مثال: تصنيف رسائل البريد الإلكتروني كبريد عشوائي أو غير عشوائي."
+            }
+        ];
+
+        let currentLang = {}; // Keeps track of language state for each question/answer
+
+        // Initialize rendering
+        window.onload = () => {
+            const container = document.getElementById('questions-container');
+            let currentSection = "";
+
+            quizData.forEach((q, index) => {
+                // Add section headers
+                if (q.section !== currentSection) {
+                    currentSection = q.section;
+                    const sectionHeader = document.createElement('div');
+                    sectionHeader.className = "text-xl font-bold text-[#673AB7] mt-8 mb-4 border-b-2 border-[#673AB7] pb-2";
+                    sectionHeader.innerText = currentSection;
+                    container.appendChild(sectionHeader);
+                }
+
+                currentLang[q.id] = { q: 'en', ans: 'en' }; // default english
+
+                const card = document.createElement('div');
+                card.className = "form-card p-6 relative";
+                card.id = `card-${q.id}`;
+
+                let optionsHTML = '';
+                if (q.type === 'tf' || q.type === 'mcq') {
+                    optionsHTML = `<div class="mt-4 space-y-3" id="options-${q.id}">`;
+                    q.optEn.forEach((opt, i) => {
+                        optionsHTML += `
+                            <div class="flex items-center ltr-opt">
+                                <input type="radio" id="${q.id}-opt${i}" name="${q.id}" value="${i}" class="radio-custom w-5 h-5 text-[#673AB7] border-gray-300 focus:ring-[#673AB7]">
+                                <label for="${q.id}-opt${i}" class="ml-3 text-gray-700 en-text cursor-pointer w-full" id="label-${q.id}-${i}">${opt}</label>
+                            </div>
+                        `;
+                    });
+                    optionsHTML += `</div>`;
+                } else if (q.type === 'essay') {
+                    optionsHTML = `
+                        <div class="mt-4">
+                            <textarea id="text-${q.id}" rows="4" class="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-[#673AB7] focus:border-transparent outline-none transition-all ar-text" placeholder="اكتب إجابتك هنا..."></textarea>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-sm font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">سؤال ${index + 1}</span>
+                    </div>
+                    <div id="qtext-${q.id}" class="text-lg font-medium text-gray-900 en-text">${q.qEn}</div>
+                    
+                    ${optionsHTML}
+                    
+                    <div id="feedback-${q.id}" class="mt-3 hidden font-bold text-sm"></div>
+
+                    <!-- Action Buttons -->
+                    <div class="mt-6 flex flex-wrap gap-2 border-t pt-4 border-gray-100">
+                        <button onclick="toggleQuesLang('${q.id}')" class="btn-action text-sm text-gray-600 px-4 py-2 rounded-md flex items-center border border-gray-200 hover:border-[#673AB7]">
+                            <i class="fas fa-language ml-2 text-[#673AB7]"></i> ترجمة السؤال
+                        </button>
+                        <button onclick="clearAnswer('${q.id}', '${q.type}')" class="btn-action text-sm text-gray-600 px-4 py-2 rounded-md flex items-center border border-gray-200 hover:border-red-400 hover:text-red-600">
+                            <i class="fas fa-eraser ml-2 text-red-500"></i> مسح الإجابة
+                        </button>
+                        <button onclick="toggleAnswer('${q.id}')" class="btn-action text-sm text-white bg-[#673AB7] hover:bg-[#5e35b1] px-4 py-2 rounded-md flex items-center mr-auto">
+                            <i class="fas fa-lightbulb ml-2"></i> إظهار الإجابة
+                        </button>
+                    </div>
+
+                    <!-- Answer Container -->
+                    <div id="ans-container-${q.id}" class="answer-container bg-green-50 rounded-md mt-4 px-4 border border-green-200 relative">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-green-800"><i class="fas fa-check-circle ml-1"></i> الإجابة النموذجية:</h4>
+                            <button onclick="toggleAnsLang('${q.id}')" class="text-xs bg-white text-[#673AB7] border border-[#673AB7] px-2 py-1 rounded hover:bg-[#F3E8FD] transition">
+                                <i class="fas fa-language"></i> ترجمة الإجابة والشرح
+                            </button>
+                        </div>
+                        ${q.type !== 'essay' ? `<div id="ans-val-${q.id}" class="text-green-900 font-semibold mb-2 en-text pl-4 border-l-4 border-green-500 ml-2">${q.optEn[q.ansIdx]}</div>` : ''}
+                        <div id="ans-exp-${q.id}" class="text-gray-700 mt-2 text-sm whitespace-pre-line en-text">${q.expEn}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        };
+
+        // Toggle Question Language
+        function toggleQuesLang(id) {
+            const qData = quizData.find(q => q.id === id);
+            const isEn = currentLang[id].q === 'en';
+            
+            // Switch Text
+            const qTextEl = document.getElementById(`qtext-${id}`);
+            qTextEl.innerText = isEn ? qData.qAr : qData.qEn;
+            qTextEl.className = isEn ? "text-lg font-medium text-gray-900 ar-text" : "text-lg font-medium text-gray-900 en-text";
+
+            // Switch Options if any
+            if (qData.type === 'tf' || qData.type === 'mcq') {
+                qData.optEn.forEach((_, i) => {
+                    const label = document.getElementById(`label-${id}-${i}`);
+                    label.innerText = isEn ? qData.optAr[i] : qData.optEn[i];
+                    label.className = isEn ? "mr-3 text-gray-700 ar-text cursor-pointer w-full" : "ml-3 text-gray-700 en-text cursor-pointer w-full";
+                    
+                    // Adjust margin for radio button based on RTL/LTR
+                    const radio = document.getElementById(`${id}-opt${i}`);
+                    radio.parentElement.className = isEn ? "flex items-center rtl-opt flex-row-reverse justify-end" : "flex items-center ltr-opt";
+                });
+            }
+
+            currentLang[id].q = isEn ? 'ar' : 'en';
+        }
+
+        // Toggle Answer Language
+        function toggleAnsLang(id) {
+            const qData = quizData.find(q => q.id === id);
+            const isEn = currentLang[id].ans === 'en';
+            
+            if (qData.type !== 'essay') {
+                const ansValEl = document.getElementById(`ans-val-${id}`);
+                ansValEl.innerText = isEn ? qData.optAr[qData.ansIdx] : qData.optEn[qData.ansIdx];
+                ansValEl.className = isEn ? "text-green-900 font-semibold mb-2 ar-text pr-4 border-r-4 border-green-500 mr-2" : "text-green-900 font-semibold mb-2 en-text pl-4 border-l-4 border-green-500 ml-2";
+            }
+
+            const expEl = document.getElementById(`ans-exp-${id}`);
+            expEl.innerText = isEn ? qData.expAr : qData.expEn;
+            expEl.className = isEn ? "text-gray-700 mt-2 text-sm whitespace-pre-line ar-text" : "text-gray-700 mt-2 text-sm whitespace-pre-line en-text";
+
+            currentLang[id].ans = isEn ? 'ar' : 'en';
+        }
+
+        // Clear Answer
+        function clearAnswer(id, type) {
+            if (type === 'tf' || type === 'mcq') {
+                const radios = document.getElementsByName(id);
+                radios.forEach(r => r.checked = false);
+            } else if (type === 'essay') {
+                document.getElementById(`text-${id}`).value = '';
+            }
+            
+            // Reset styling
+            const card = document.getElementById(`card-${id}`);
+            card.style.border = "1px solid #dadce0";
+            const feedback = document.getElementById(`feedback-${id}`);
+            feedback.classList.add('hidden');
+        }
+
+        // Clear All Answers
+        function clearAllAnswers() {
+            quizData.forEach(q => clearAnswer(q.id, q.type));
+            // Hide all answers
+            document.querySelectorAll('.answer-container').forEach(el => el.classList.remove('show'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle Show/Hide Answer
+        function toggleAnswer(id) {
+            const ansContainer = document.getElementById(`ans-container-${id}`);
+            ansContainer.classList.toggle('show');
+        }
+
+        // Evaluate All
+        function evaluateAll() {
+            let score = 0;
+            let totalGradable = 0;
+
+            quizData.forEach(q => {
+                const card = document.getElementById(`card-${q.id}`);
+                const feedback = document.getElementById(`feedback-${q.id}`);
+                feedback.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-gray-600');
+
+                if (q.type === 'tf' || q.type === 'mcq') {
+                    totalGradable++;
+                    const radios = document.getElementsByName(q.id);
+                    let selectedVal = null;
+                    radios.forEach(r => { if (r.checked) selectedVal = parseInt(r.value); });
+
+                    if (selectedVal === null) {
+                        card.style.border = "1px solid #F59E0B"; // Yellow warning
+                        feedback.innerText = "لم يتم الإجابة.";
+                        feedback.classList.add('text-yellow-600');
+                    } else if (selectedVal === q.ansIdx) {
+                        score++;
+                        card.style.border = "2px solid #10B981"; // Green success
+                        feedback.innerHTML = '<i class="fas fa-check"></i> إجابة صحيحة!';
+                        feedback.classList.add('text-green-600');
+                    } else {
+                        card.style.border = "2px solid #EF4444"; // Red error
+                        feedback.innerHTML = '<i class="fas fa-times"></i> إجابة خاطئة.';
+                        feedback.classList.add('text-red-600');
+                        // Auto show answer if wrong
+                        document.getElementById(`ans-container-${q.id}`).classList.add('show');
+                    }
+                } else if (q.type === 'essay') {
+                    const textVal = document.getElementById(`text-${q.id}`).value.trim();
+                    if (textVal === "") {
+                        card.style.border = "1px solid #F59E0B";
+                        feedback.innerText = "لم يتم كتابة إجابة.";
+                        feedback.classList.add('text-yellow-600');
+                    } else {
+                        card.style.border = "1px solid #3B82F6"; // Blue info
+                        feedback.innerHTML = '<i class="fas fa-info-circle"></i> تم تسجيل الإجابة المقالية. يرجى مراجعتها مع النموذج.';
+                        feedback.classList.add('text-blue-600');
+                        document.getElementById(`ans-container-${q.id}`).classList.add('show');
+                    }
+                }
+            });
+
+            // Show Modal with result
+            const modal = document.getElementById('result-modal');
+            const scoreText = document.getElementById('score-text');
+            const percentage = Math.round((score / totalGradable) * 100);
+            
+            scoreText.innerHTML = `لقد حصلت على <span class="${percentage >= 50 ? 'text-green-600' : 'text-red-600'} text-3xl mx-2">${score} / ${totalGradable}</span> في أسئلة الاختيارات.`;
+            modal.classList.remove('hidden');
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('result-modal').classList.add('hidden');
+        }
+
+        // Scroll to Top Logic
+        const fab = document.getElementById('fab');
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                fab.classList.remove('scale-0', 'opacity-0');
+                fab.classList.add('scale-100', 'opacity-100');
+            } else {
+                fab.classList.add('scale-0', 'opacity-0');
+                fab.classList.remove('scale-100', 'opacity-100');
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
