@@ -65,7 +65,6 @@
 </head>
 <body class="text-gray-800 pb-20">
 
-    <!-- Back to Landing Page Button -->
     <div class="max-w-3xl mx-auto mt-6 px-4">
         <a href="index.html" class="inline-flex items-center bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-md font-semibold shadow-sm transition-colors">
             <i class="fas fa-arrow-right ml-2"></i> العودة إلى الصفحة الرئيسية
@@ -73,7 +72,6 @@
     </div>
 
 
-    <!-- Header Section -->
     <div class="max-w-3xl mx-auto mt-6 px-4">
         <div class="form-card top-border p-6 mb-6">
             <h1 class="text-3xl font-bold mb-2 text-gray-900">نموذج أسئلة مادة DA204 التدريبي</h1>
@@ -84,12 +82,9 @@
         </div>
     </div>
 
-    <!-- Questions Container -->
     <div id="questions-container" class="max-w-3xl mx-auto px-4 space-y-6">
-        <!-- سيتم حقن الأسئلة هنا بواسطة JavaScript -->
-    </div>
+        </div>
 
-    <!-- Footer Actions -->
     <div class="max-w-3xl mx-auto mt-8 px-4 flex flex-col sm:flex-row justify-between gap-4 mb-12">
         <button onclick="evaluateAll()" class="bg-[#673AB7] hover:bg-[#5e35b1] text-white px-6 py-3 rounded-md font-semibold shadow-md transition-colors flex items-center justify-center">
             <i class="fas fa-check-double ml-2"></i> تقييم الإجابات
@@ -99,12 +94,10 @@
         </button>
     </div>
 
-    <!-- Floating Back to Top Button -->
     <button onclick="scrollToTop()" id="fab" class="fixed bottom-6 left-6 bg-[#673AB7] text-white p-4 rounded-full shadow-lg hover:bg-[#5e35b1] transition-all transform scale-0 opacity-0 z-50">
         <i class="fas fa-arrow-up text-xl"></i>
     </button>
 
-    <!-- Modal for Evaluation Result -->
     <div id="result-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full text-center">
             <div class="text-5xl text-[#673AB7] mb-4"><i class="fas fa-award"></i></div>
@@ -178,9 +171,9 @@
                 qEn: "Users posts in social networks are streaming spatiotemporal data.",
                 qAr: "منشورات المستخدمين في الشبكات الاجتماعية هي بيانات متدفقة مكانية وزمانية (streaming spatiotemporal data).",
                 optEn: ["True", "False"], optAr: ["صح", "خطأ"],
-                ansIdx: 0,
-                expEn: "Social-network posts may arrive continuously and may include time and location information.",
-                expAr: "قد تصل منشورات الشبكة الاجتماعية بشكل مستمر وقد تتضمن معلومات تتعلق بالوقت والمكان."
+                ansIdx: 1,
+                expEn: "False: Social networks are primarily categorized as graph and network data. Lecture 1, Page 17 states that graph and network data include social networks. Streaming data examples in the source are video surveillance and remote sensing, not social-network posts.",
+                expAr: "خطأ: تُصنف الشبكات الاجتماعية في المقام الأول على أنها بيانات شبكية ورسومية. تذكر المحاضرة 1، صفحة 17 أن هذه البيانات تتضمن الشبكات الاجتماعية. أمثلة البيانات المتدفقة في المصدر هي المراقبة بالفيديو والاستشعار عن بعد، وليست منشورات الشبكات الاجتماعية."
             },
             {
                 id: "q8", section: "صح / خطأ", type: "tf",
@@ -384,7 +377,6 @@
                     
                     <div id="feedback-${q.id}" class="mt-3 hidden font-bold text-sm"></div>
 
-                    <!-- Action Buttons -->
                     <div class="mt-6 flex flex-wrap gap-2 border-t pt-4 border-gray-100">
                         <button onclick="toggleQuesLang('${q.id}')" class="btn-action text-sm text-gray-600 px-4 py-2 rounded-md flex items-center border border-gray-200 hover:border-[#673AB7]">
                             <i class="fas fa-language ml-2 text-[#673AB7]"></i> ترجمة السؤال
@@ -397,7 +389,6 @@
                         </button>
                     </div>
 
-                    <!-- Answer Container -->
                     <div id="ans-container-${q.id}" class="answer-container bg-green-50 rounded-md mt-4 px-4 border border-green-200 relative">
                         <div class="flex justify-between items-start mb-2">
                             <h4 class="font-bold text-green-800"><i class="fas fa-check-circle ml-1"></i> الإجابة النموذجية:</h4>
